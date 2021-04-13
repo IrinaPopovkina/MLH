@@ -20,7 +20,7 @@ describe('StoryType field', function () {
         });
     });
 
-    describe('Positive cases', function () {
+    describe('Positive cases. Labels correct', function () {
 
         it('TC-073 The expanded list appears in the dropdown', function () {
             $(sel.story).click();

@@ -1,19 +1,22 @@
 import sel from '../data/selectors';
-import {storyTypes, caseType, name, gender} from "../data/testData";
+import {caseType, story} from "../data/testData";
 import exp from "../data/expected.json";
 const path = require('path');
 
-
-function inputValues4(name, gender, age, story){
+const inputValues4 = (name, gender, age, story) => {
     $(sel.name).setValue(name);
     $$(sel.radioButtons)[gender].click();
-    $(sel.age).setValue(age);
+    $(sel.age).setValue(age)
     $(sel.story).click();
     $$(sel.storyList)[story].click();
 }
 
 function inputValues4Submit(name, gender, age, story){
-    inputValues4(name, gender, age, story);
+    $(sel.name).setValue(name);
+    $$(sel.radioButtons)[gender].click();
+    $(sel.age).setValue(age);
+    $(sel.story).click();
+    $$(sel.storyList)[story].click();
     $(sel.submit).click();
 }
 
@@ -31,38 +34,38 @@ function uploadingImage(image, element, type) {
     }
     if(type === caseType.negative){
         $(sel.imageError).waitForDisplayed();
-        return $(element).isDisplayed();;
+        return $(element).isDisplayed();
     }
 }
-
 function inputValues5(name, gender, age, story, image){
     inputValues4(name, gender, age, story);
     uploadingImage(image);
     $(sel.submit).click();
 }
 
-function clearInput(input) {
-    let el = $(input).getValue();
-    for (let i = 0; i < el.length; i++)
-        $(input).keys(['Backspace']);
-    return $(sel.errorMessage).waitForDisplayed();
+function genderRun(gender, button){
+    $$(sel.radioButtons)[gender].click();
+    return  $(button).isSelected();
 }
 
-function storyTitle(type){
+function fillingTheStory(storyT){
     $(sel.story).click();
-    return $$(sel.storyType)[type].getAttribute('title');
-}
-
-function fillingStoryType(type){
-    $(sel.story).click();
-    $$(sel.storyList)[type].click();
+    $$(sel.storyList)[storyT].click();
     return $(sel.story).getText();
 }
 
-function collapsingDropdown(type){
+function collapsedDropdown (storyT){
     $(sel.story).click();
-    $$(sel.storyList)[type].click();
-    return $(sel.storyDropDown).isDisplayed();
+    $$(sel.storyList)[storyT].click();
+    return $(sel.dropDownMenu).isDisplayed();
+}
+
+function fillingTheStoryTwice(story1, story2) {
+    $(sel.story).click();
+    $$(sel.storyList)[story1].click();
+    $(sel.story).click();
+    $$(sel.storyList)[story2].click();
+    return $(sel.story).getText();
 }
 
 function refreshChecking(){
@@ -74,6 +77,19 @@ function refreshChecking(){
     if(names === '' && ages === '' && storyType === false && genders === false)
         result = true;
     return result;
+}
+
+function nameAccepting(name){
+    $(sel.name).setValue(name);
+    return $(sel.errorMessage).isDisplayed();
+}
+
+function clearInput(input) {
+    let el = $(input).getValue();
+    for (let i = 0; i < el.length; i++){
+        $(input).keys(['Backspace']);
+    }
+    return $(sel.errorMessage).waitForDisplayed();
 }
 
 function textReformat(element){
@@ -90,15 +106,9 @@ function textReformat(element){
     return result;
 }
 
-function nameAccepting(name){
-    $(sel.name).setValue(name);
-    return $(sel.errorMessage).isDisplayed();
+function storyTitle(type){
+    $(sel.story).click();
+    return $$(sel.storyList)[type].getAttribute('title');
 }
 
-function genderRun(gender, button){
-    $$(sel.radioButtons)[gender].click();
-    return  $(button).isSelected();
-}
-
-module.exports = {genderRun, inputValues4, clearInput, uploadingImage, inputValues5, inputValues4Submit, storyTitle, collapsingDropdown, fillingStoryType, refreshChecking, textReformat, nameAccepting};
-
+module.exports = {inputValues4, inputValues4Submit, genderRun, fillingTheStory, collapsedDropdown, fillingTheStoryTwice, uploadingImage, inputValues5, refreshChecking, nameAccepting, clearInput, textReformat, storyTitle};
